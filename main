@@ -28,8 +28,8 @@ def get_all_categories():
              #print(elst)
              writer.writerows([(i,) for i in listcat])
 
-    with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Fichiers/fille.csv"), newline='', encoding='utf-8') as fs:
-                reader = csv.reader(fs)
+   # with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Fichiers/fille.csv"), newline='', encoding='utf-8') as fs:
+                #reader = csv.reader(fs)
               #  for row in reader:
                   #  print(row)
 
@@ -119,8 +119,14 @@ def get_book_categorie():
 
         reponse=requests.get(y)
         soup=BeautifulSoup(reponse.content.decode("utf-8", "ignore"),features="html.parser")
-        books=soup.find('section').findAll('a')
+        url_h3 = soup.findAll('h3')
+
+        print(url_h3)
         l=[]
+        url_image = []
+        for h3 in url_h3:
+            url_image.append(h3.find('a'))
+        
         with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Books/" + i + ".csv"), 'w', newline='') as fichier:
             entetes = [
                 "product_page_url",
@@ -137,26 +143,28 @@ def get_book_categorie():
             ]
             ligne_entetes = ";".join(entetes) + "\n"
             fichier.write(ligne_entetes)
-        for b in books:
+     
 
-            #print(b)
-            bb=b['href']
+        for b in url_image:
+            
+                #print(b)
+                bb=b['href']
 
-            t = (homepage+"catalogue/"+bb).replace("../", "")
-            #print(t)
-            reponse = requests.get(t)
-            soup3 = BeautifulSoup(reponse.content.decode("utf-8", "ignore"), features="html.parser")
-            infos = soup3.find_all('td')
-            titre=soup3.find('h1').text
-            description=soup3.find('meta', {'name': 'description'})['content']
-            reviews_rating=soup3.find('p',{'class':'star-rating'})['class'][1]
-            image_url=soup3.find('img')['src']
-            image_name=soup3.find('img')['alt']
+                t = (homepage+"catalogue/"+bb).replace("../", "")
+                #print(t)
+                reponse = requests.get(t)
+                soup3 = BeautifulSoup(reponse.content.decode("utf-8", "ignore"), features="html.parser")
+                infos = soup3.find_all('td')
+                titre=soup3.find('h1').text
+                description=soup3.find('meta', {'name': 'description'})['content']
+                reviews_rating=soup3.find('p',{'class':'star-rating'})['class'][1]
+                image_url=soup3.find('img')['src']
+                image_name=soup3.find('img')['alt']
 
 
-            if b['href'] not in l:
-                l.append(b['href'])
-               # print(l)
+                if b['href'] not in l:
+                    l.append(b['href'])
+                   # print(l)
 
                 try:
                     l = [
@@ -176,25 +184,39 @@ def get_book_categorie():
                            ]
                 except:
                     pass
-                nbr_page = soup.find("li", {"class": "current"})
-                if nbr_page:
-                    for k in range(2, int(nbr_page.text.strip()[-1]) + 1):
-                        toto = y.split("/")
-                        toto[-1] = "page-" + str(k) + ".html"
-                        url = "/".join(toto)
-                       # print(url)
+               # for i in l:
+                 # if i not in book2:
+                     #book2.append(i)
 
 
-                        kb = requests.get(url)
-                        soup3 = BeautifulSoup(kb.content.decode("utf-8", "ignore"), features="html.parser")
-                        url_image= soup3.find('section').findAll('a')
-                        print(url_image)
-                        cpt=0
+
+                with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Books/" + i + ".csv"), 'a', encoding="utf-8", newline='') as fichier:
+                     mylist = ";".join(l) + "\n"
+                     fichier.write(mylist)
+
+        nbr_page = soup.find("li", {"class": "current"})
+        if nbr_page:
+                for k in range(2, int(nbr_page.text.strip()[-1]) + 1):
+                    toto = y.split("/")
+                    toto[-1] = "page-" + str(k) + ".html"
+                    url = "/".join(toto)
+                           # print(url)
 
 
-                        for u in url_image:
+                    kb = requests.get(url)
+                    soup3 = BeautifulSoup(kb.content.decode("utf-8", "ignore"), features="html.parser")
+                    url_h3= soup3.findAll('h3')
 
-                            if cpt%2==0:
+                    print(url_h3)
+                    cpt=0
+                    url_image=[]
+                    for h3 in url_h3:
+                        url_image.append(h3.find('a'))
+                    for u in url_image:
+
+                             #if cpt%2==0:
+                             #if u not in book2:
+                               # book2.append(u)
 
 
 
@@ -209,6 +231,8 @@ def get_book_categorie():
                                 reviews_rating = soup3.find('p', {'class': 'star-rating'})['class'][1]
                                 image_url = soup3.find('img')['src']
                                 image_name = soup3.find('img')['alt']
+                                #if u['href'] not in l:
+                                   # l.append(u['href'])
                                 try:
                                     l = [
                                         t,
@@ -226,21 +250,19 @@ def get_book_categorie():
                                         ]
                                 except:
                                     pass
-                            cpt+=1
-
-
-
-
-                            #print(l)
-                with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Books/"+i+".csv"), 'a',encoding="utf-8", newline='') as fichier:
-                            mylist = ";".join(l) + "\n"
-                            fichier.write(mylist)
+                                #for i in l:
+                                    #if i not in book2:
+                                        #book2.append(i)
+                    #cpt+=1
+                                with open(os.path.abspath("C:/Users/Idrissa TOUNKARA/PycharmProjects/testProjet/Books/"+i+".csv"), 'a',encoding="utf-8", newline='') as fichier:
+                                                mylist = ";".join(l) + "\n"
+                                                fichier.write(mylist)
 
 
 get_book_categorie()
 
 
-"""def imageBook():
+def imageBook():
     homepage = "https://books.toscrape.com/"
     reponse = requests.get(homepage)
     soup = BeautifulSoup(reponse.content.decode("utf-8", "ignore"), features="html.parser")
@@ -259,7 +281,7 @@ get_book_categorie()
 
             urllib.request.urlretrieve(img,("LesImages/"+(name).replace(".","")+".jpg").replace(":","").replace("*","").replace("?","").replace('''"''',""))
 
-imageBook()"""
+imageBook()
 
 
 
