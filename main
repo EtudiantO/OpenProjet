@@ -16,7 +16,7 @@ def get_all_categories():
 
         data[category.text.strip()]=homepage+category['href']
 
-     return data
+    return data
 
 def get_all_books(url):
 
