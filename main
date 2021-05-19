@@ -1,9 +1,10 @@
-
+import os
 import csv
 from bs4 import BeautifulSoup
 import requests
-
 import urllib.request
+
+os.mkdir('Books','LesImages')
 
 homepage = "https://books.toscrape.com/"
 def get_all_categories():
