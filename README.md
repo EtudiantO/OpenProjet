@@ -1,7 +1,11 @@
 # Projet2 
 
 # Pour exécuter de mon  code dans l'environnement virtuel:   
-# J'ai creer mon en environnement virtuel
+# Je cree un dossier PROJET2 dans machine physique 
+# je clone le lien Github de mon projet2 afin d'avoir le copie du projet2 dans mon pc
+git clone 
+
+# Je cree mon en environnement virtuel
 testProjet/projetV    python -m venv envV      
 # J'active
 testProjet/projetV    source envV/scripts/activate  
